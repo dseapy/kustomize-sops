@@ -1,5 +1,7 @@
 ARG GO_VERSION="1.17"
 
+FROM dseapy/sops-aws-v2:latest as sops
+
 #--------------------------------------------#
 #--------Build KSOPS and Kustomize-----------#
 #--------------------------------------------#
@@ -19,6 +21,8 @@ ENV XDG_CONFIG_HOME=$HOME/.config
 RUN export GOOS=$(echo ${TARGETPLATFORM} | cut -d / -f1) && \
     export GOARCH=$(echo ${TARGETPLATFORM} | cut -d / -f2) && \
     export GOARM=$(echo ${TARGETPLATFORM} | cut -d / -f3 | cut -c2-)
+
+COPY --from=sops /go/src/go.mozilla.org/sops /go/src/go.mozilla.org/sops
 
 WORKDIR /go/src/github.com/viaduct-ai/kustomize-sops
 
